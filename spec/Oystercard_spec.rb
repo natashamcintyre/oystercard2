@@ -37,4 +37,8 @@ describe Oystercard do
     end
   end
 
+  it 'responds to the method touch in' do
+    expect(subject).to respond_to(:touch_in)
+  end
+
 end
