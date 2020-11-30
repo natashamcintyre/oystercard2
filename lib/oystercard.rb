@@ -11,12 +11,17 @@ LIMIT = 90
 
     @balance += amount
   end
+
   def deduct(amount)
     @balance -= amount
   end
 
   def touch_in
     @state = 'in journey'
+  end
+
+  def in_journey?
+
   end
 
 end

@@ -52,4 +52,11 @@ describe Oystercard do
     expect(subject).to respond_to(:in_journey?)
   end
 
+  describe '#in_journey?' do
+    it 'returns true when in journey' do
+      subject.touch_in
+      expect(subject.in_journey?).to be true
+    end
+  end
+
 end
