@@ -41,4 +41,9 @@ describe Oystercard do
     expect(subject).to respond_to(:touch_in)
   end
 
+  describe '#touch_in' do
+    subject.touch_in
+    expect(subject.state).to be "in journey"
+  end
+
 end
