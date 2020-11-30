@@ -21,7 +21,7 @@ LIMIT = 90
   end
 
   def in_journey?
-    true
+    @state == 'in journey'
   end
 
 end
