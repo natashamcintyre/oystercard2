@@ -1,7 +1,7 @@
 require 'oystercard'
 
 describe Oystercard do
-  it 'can create an instance of airport' do
+  it 'can create an instance of oystercard' do
     expect(subject).to be_kind_of(Oystercard)
   end
 
@@ -13,7 +13,7 @@ describe Oystercard do
     expect(subject.balance).to eq 0
   end
 
-  it 'responds to the method top up' do
+  it 'responds to the method top_up' do
     expect(subject).to respond_to(:top_up).with(1).argument
   end
 
@@ -37,13 +37,19 @@ describe Oystercard do
     end
   end
 
-  it 'responds to the method touch in' do
+  it 'responds to the method touch_in' do
     expect(subject).to respond_to(:touch_in)
   end
 
   describe '#touch_in' do
-    subject.touch_in
-    expect(subject.state).to be "in journey"
+    it 'sets card state to in journey' do
+      subject.touch_in
+      expect(subject.state).to eq 'in journey'
+    end
+  end
+
+  it 'responds to the method in_journey?' do
+    expect(subject).to respond_to(:in_journey?)
   end
 
 end

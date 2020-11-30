@@ -1,5 +1,5 @@
 class Oystercard
-attr_reader :balance
+attr_reader :balance, :state
 LIMIT = 90
 
   def initialize
@@ -16,7 +16,7 @@ LIMIT = 90
   end
 
   def touch_in
-
+    @state = 'in journey'
   end
-    
+
 end
