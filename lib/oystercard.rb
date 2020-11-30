@@ -26,7 +26,7 @@ LIMIT = 90
   end
 
   def touch_out
-
+    @state = 'not in journey'
   end
 
 end
