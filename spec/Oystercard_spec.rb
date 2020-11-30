@@ -67,4 +67,12 @@ describe Oystercard do
     expect(subject).to respond_to(:touch_out)
   end
 
+  describe '#touch_out' do
+    it 'sets card state to not in journey' do
+      subject.touch_in
+      subject.touch_out
+      expect(subject.state).to eq 'not in journey'
+    end
+  end
+
 end
