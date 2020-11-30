@@ -4,7 +4,7 @@ LIMIT = 90
 
   def initialize
     @balance = 0
-    @state = 'not in journey'
+    @state = false
   end
 
   def top_up(amount)
@@ -18,15 +18,15 @@ LIMIT = 90
   end
 
   def touch_in
-    @state = 'in journey'
+    @state = true
   end
 
   def in_journey?
-    @state == 'in journey'
+    @state
   end
 
   def touch_out
-    @state = 'not in journey'
+    @state = false
   end
 
 end

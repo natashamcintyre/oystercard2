@@ -44,7 +44,7 @@ describe Oystercard do
   describe '#touch_in' do
     it 'sets card state to in journey' do
       subject.touch_in
-      expect(subject.state).to eq 'in journey'
+      expect(subject.state).to eq true
     end
   end
 
@@ -55,11 +55,11 @@ describe Oystercard do
   describe '#in_journey?' do
     it 'returns true when in journey' do
       subject.touch_in
-      expect(subject.in_journey?).to be true
+      expect(subject).to be_in_journey
     end
 
     it 'returns false when not in journey' do
-      expect(subject.in_journey?).to be false
+      expect(subject).not_to be_in_journey
     end
   end
 
@@ -71,7 +71,7 @@ describe Oystercard do
     it 'sets card state to not in journey' do
       subject.touch_in
       subject.touch_out
-      expect(subject.state).to eq 'not in journey'
+      expect(subject.state).to eq false
     end
   end
 
