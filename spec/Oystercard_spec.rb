@@ -46,6 +46,10 @@ describe Oystercard do
       subject.touch_in
       expect(subject.state).to eq true
     end
+
+    it 'raises error if balance is under £1' do
+      expect { subject.touch_in }.to raise_error "Insufficient funds"
+    end
   end
 
   it 'responds to the method in_journey?' do
@@ -61,6 +65,7 @@ describe Oystercard do
     it 'returns false when not in journey' do
       expect(subject).not_to be_in_journey
     end
+
   end
 
   it 'responds to the method touch_out' do
@@ -71,8 +76,10 @@ describe Oystercard do
     it 'sets card state to not in journey' do
       subject.touch_in
       subject.touch_out
-      expect(subject.state).to eq false
+      expect(subject.state).to be false
     end
   end
+
+
 
 end
