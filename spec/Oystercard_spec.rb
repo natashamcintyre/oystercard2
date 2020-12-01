@@ -29,13 +29,13 @@ describe Oystercard do
     end
   end
 
-  describe '#deduct' do
-    it 'reduces balance by amount' do
-      subject.top_up(50)
-      subject.deduct(5)
-      expect(subject.balance).to eq 45
-    end
-  end
+  # describe '#deduct' do
+  #   it 'reduces balance by amount' do
+  #     subject.top_up(50)
+  #     subject.deduct(5)
+  #     expect(subject.balance).to eq 45
+  #   end
+  # end
 
   it 'responds to the method touch_in' do
     expect(subject).to respond_to(:touch_in)
@@ -50,6 +50,11 @@ describe Oystercard do
 
     it 'raises error if balance is under MIN_FARE' do
       expect { subject.touch_in }.to raise_error "Insufficient funds"
+    end
+
+    it 'remembers the entry point' do
+      subject.top_up(Oystercard::MIN_FARE)
+      expect { subject.touch_in }.to change { subject.entry_point }
     end
   end
 
@@ -82,7 +87,7 @@ describe Oystercard do
       expect(subject.state).to be false
     end
 
-    it 'deduces journey fare from balance' do
+    it 'deducts journey fare from balance' do
       subject.top_up(15)
       subject.touch_in
       subject.touch_out

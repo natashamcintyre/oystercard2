@@ -14,10 +14,6 @@ MIN_FARE = 1
     @balance += amount
   end
 
-  def deduct(amount)
-    @balance -= amount
-  end
-
   def touch_in
     fail "Insufficient funds" if @balance < MIN_FARE
     @state = true
@@ -28,7 +24,14 @@ MIN_FARE = 1
   end
 
   def touch_out
+    self.deduct(MIN_FARE)
     @state = false
+  end
+
+  private
+
+  def deduct(amount)
+    @balance -= amount
   end
 
 end
