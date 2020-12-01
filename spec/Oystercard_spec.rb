@@ -43,11 +43,12 @@ describe Oystercard do
 
   describe '#touch_in' do
     it 'sets card state to in journey' do
+      subject.top_up(Oystercard::MIN_FARE)
       subject.touch_in
       expect(subject.state).to eq true
     end
 
-    it 'raises error if balance is under £1' do
+    it 'raises error if balance is under MIN_FARE' do
       expect { subject.touch_in }.to raise_error "Insufficient funds"
     end
   end
@@ -58,6 +59,7 @@ describe Oystercard do
 
   describe '#in_journey?' do
     it 'returns true when in journey' do
+      subject.top_up(Oystercard::MIN_FARE)
       subject.touch_in
       expect(subject).to be_in_journey
     end
@@ -74,9 +76,17 @@ describe Oystercard do
 
   describe '#touch_out' do
     it 'sets card state to not in journey' do
+      subject.top_up(Oystercard::MIN_FARE)
       subject.touch_in
       subject.touch_out
       expect(subject.state).to be false
+    end
+
+    it 'deduces journey fare from balance' do
+      subject.top_up(15)
+      subject.touch_in
+      subject.touch_out
+      expect { subject.touch_out }.to change { subject.balance }
     end
   end
 
