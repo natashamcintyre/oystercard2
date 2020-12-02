@@ -1,7 +1,9 @@
 require 'station'
 
 describe Station do
-  subject { Station.new("Covent Garden", 2) }
+
+  subject {described_class.new(name: "Covent Garden", zone: 2)}
+
   it { is_expected.to respond_to(:name) }
 
   it { is_expected.to respond_to(:zone) }
