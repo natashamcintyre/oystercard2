@@ -1,6 +1,7 @@
 require 'oystercard'
 
 describe Oystercard do
+  let(:entry) { double :entry }
   it 'can create an instance of oystercard' do
     expect(subject).to be_kind_of(Oystercard)
   end
@@ -44,17 +45,17 @@ describe Oystercard do
   describe '#touch_in' do
     it 'sets card state to in journey' do
       subject.top_up(Oystercard::MIN_FARE)
-      subject.touch_in
-      expect(subject.state).to eq true
+      subject.touch_in(entry)
+      expect(subject).to be_in_journey
     end
 
     it 'raises error if balance is under MIN_FARE' do
-      expect { subject.touch_in }.to raise_error "Insufficient funds"
+      expect { subject.touch_in(entry) }.to raise_error "Insufficient funds"
     end
 
     it 'remembers the entry point' do
       subject.top_up(Oystercard::MIN_FARE)
-      expect { subject.touch_in }.to change { subject.entry_point }
+      expect { subject.touch_in(entry) }.to change { subject.entry }
     end
   end
 
@@ -65,7 +66,7 @@ describe Oystercard do
   describe '#in_journey?' do
     it 'returns true when in journey' do
       subject.top_up(Oystercard::MIN_FARE)
-      subject.touch_in
+      subject.touch_in(entry)
       expect(subject).to be_in_journey
     end
 
@@ -82,14 +83,14 @@ describe Oystercard do
   describe '#touch_out' do
     it 'sets card state to not in journey' do
       subject.top_up(Oystercard::MIN_FARE)
-      subject.touch_in
+      subject.touch_in(entry)
       subject.touch_out
-      expect(subject.state).to be false
+      expect(subject).not_to be_in_journey
     end
 
     it 'deducts journey fare from balance' do
       subject.top_up(15)
-      subject.touch_in
+      subject.touch_in(entry)
       subject.touch_out
       expect { subject.touch_out }.to change { subject.balance }
     end
