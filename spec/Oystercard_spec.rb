@@ -1,8 +1,8 @@
 require "oystercard"
 
 describe Oystercard do
-  let(:entry) { double :entry }
-  let(:exit) { double :exit }
+  let(:entry_station) { double :entry_station }
+  let(:exit_station) { double :exit_station }
   # it "can create an instance of oystercard" do
   #   expect(subject).to be_kind_of(Oystercard)
   # end
@@ -46,28 +46,28 @@ describe Oystercard do
   describe "#touch_in" do
     it "sets card state to in journey" do
       subject.top_up(Oystercard::MIN_FARE)
-      subject.touch_in(entry)
+      subject.touch_in(entry_station)
       expect(subject).to be_in_journey
     end
 
     it "raises error if balance is under MIN_FARE" do
-      expect { subject.touch_in(entry) }.to raise_error "Insufficient funds"
+      expect { subject.touch_in(entry_station) }.to raise_error "Insufficient funds"
     end
 
-    it "remembers the entry point" do
+    it "remembers the entry_station point" do
       subject.top_up(Oystercard::MIN_FARE)
-      expect { subject.touch_in(entry) }.to change { subject.entry }
+      expect { subject.touch_in(entry_station) }.to change { subject.entry_station }
     end
   end
   it { is_expected.to respond_to(:in_journey?) }
-  # it "responds to the method in_journey?" do
-  #   expect(subject).to respond_to(:in_journey?)
-  # end
+  it "responds to the method in_journey?" do
+    expect(subject).to respond_to(:in_journey?)
+  end
 
   describe "#in_journey?" do
     it "returns true when in journey" do
       subject.top_up(Oystercard::MIN_FARE)
-      subject.touch_in(entry)
+      subject.touch_in(entry_station)
       expect(subject).to be_in_journey
     end
 
@@ -82,32 +82,31 @@ describe Oystercard do
 
   describe "#touch_out" do
     before(:each) do
-      # @thing = Thing.new
       subject.top_up(15)
-      subject.touch_in(entry)
+      subject.touch_in(entry_station)
     end
     it "sets card state to not in journey" do
-      # subject.top_up(Oystercard::MIN_FARE)
-      # subject.touch_in(entry)
-      subject.touch_out(exit)
+      subject.top_up(Oystercard::MIN_FARE)
+      subject.touch_in(entry_station)
+      subject.touch_out(exit_station)
       expect(subject).not_to be_in_journey
     end
 
     it "deducts journey fare from balance" do
-      expect { subject.touch_out(exit) }.to change { subject.balance }
+      expect { subject.touch_out(exit_station) }.to change { subject.balance }
     end
   end
 
-  it "stores journeys in history" do
+  it "stores journey in journeys" do
     subject.top_up(15)
-    subject.touch_in(entry)
-    subject.touch_out(exit)
+    subject.touch_in(entry_station)
+    subject.touch_out(exit_station)
     expect(subject).to respond_to(:journeys)
   end
-  it "stores journeys in history" do
+  it "stores journeys in journeys" do
     subject.top_up(15)
-    subject.touch_in(entry)
-    subject.touch_out(exit)
-    expect(subject.journeys).to eq([{ :entry => entry, :exit => exit }])
+    subject.touch_in(entry_station)
+    subject.touch_out(exit_station)
+    expect(subject.journeys).to eq([{ :entry_station => entry_station, :exit_station => exit_station }])
   end
 end

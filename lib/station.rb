@@ -5,6 +5,4 @@ class Station
     @name = hash[:name]
     @zone = hash[:zone]
   end
-
-
 end
