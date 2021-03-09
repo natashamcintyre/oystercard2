@@ -3,20 +3,17 @@ require "oystercard"
 describe Oystercard do
   let(:entry) { double :entry }
   let(:exit) { double :exit }
-  # it "can create an instance of oystercard" do
-  #   expect(subject).to be_kind_of(Oystercard)
-  # end
+  let(:journey) { double :Journey }
+  let(:subject) { described_class.new(journey) }
+
+  limit = Oystercard::LIMIT
+
   it { is_expected.to respond_to(:balance) }
-  # it "responds to the method balance" do
-  #   expect(subject).to respond_to(:balance)
-  # end
+
+  it { is_expected.to respond_to(:top_up).with(1).argument }
 
   it "gives a default balance of 0" do
     expect(subject.balance).to eq 0
-  end
-
-  it "responds to the method top_up" do
-    expect(subject).to respond_to(:top_up).with(1).argument
   end
 
   describe "#top_up" do
@@ -25,9 +22,9 @@ describe Oystercard do
       expect(subject.balance).to eq 10
     end
 
-    it "raises an error when top up exceeds #{Oystercard::LIMIT}" do
-      message = "Balance cannot exceed #{Oystercard::LIMIT}"
-      expect { subject.top_up(Oystercard::LIMIT + 1) }.to raise_error message
+    it "raises an error when top up exceeds #{limit}" do
+      message = "Balance cannot exceed #{limit}"
+      expect { subject.top_up(limit + 1) }.to raise_error message
     end
   end
 
@@ -38,13 +35,13 @@ describe Oystercard do
   #     expect(subject.balance).to eq 45
   #   end
   # end
+
   it { is_expected.to respond_to(:touch_in) }
-  # it "responds to the method touch_in" do
-  #   expect(subject).to respond_to(:touch_in)
-  # end
 
   describe "#touch_in" do
     it "sets card state to in journey" do
+      allow(journey).to receive(:start)
+      allow(journey).to receive(:entry) {true}
       subject.top_up(Oystercard::MIN_FARE)
       subject.touch_in(entry)
       expect(subject).to be_in_journey
@@ -54,41 +51,37 @@ describe Oystercard do
       expect { subject.touch_in(entry) }.to raise_error "Insufficient funds"
     end
 
-    it "remembers the entry point" do
-      subject.top_up(Oystercard::MIN_FARE)
-      expect { subject.touch_in(entry) }.to change { subject.entry }
-    end
   end
   it { is_expected.to respond_to(:in_journey?) }
-  # it "responds to the method in_journey?" do
-  #   expect(subject).to respond_to(:in_journey?)
-  # end
 
   describe "#in_journey?" do
     it "returns true when in journey" do
+      allow(journey).to receive(:start)
+      allow(journey).to receive(:entry) {true}
       subject.top_up(Oystercard::MIN_FARE)
       subject.touch_in(entry)
       expect(subject).to be_in_journey
     end
 
     it "returns false when not in journey" do
+      allow(journey).to receive(:entry) { false }
       expect(subject).not_to be_in_journey
     end
   end
+
   it { is_expected.to respond_to(:touch_out) }
-  # it "responds to the method touch_out" do
-  #   expect(subject).to respond_to(:touch_out)
-  # end
 
   describe "#touch_out" do
     before(:each) do
-      # @thing = Thing.new
-      subject.top_up(15)
+      allow(journey).to receive(:start)
+      allow(journey).to receive(:finish) { Oystercard::MIN_FARE }
+      allow(journey).to receive(:log) { { :entry => entry, :exit => exit } }
+      allow(journey).to receive(:reset)
+      allow(journey).to receive(:entry) { false }
+      subject.top_up(Oystercard::MIN_FARE)
       subject.touch_in(entry)
     end
     it "sets card state to not in journey" do
-      # subject.top_up(Oystercard::MIN_FARE)
-      # subject.touch_in(entry)
       subject.touch_out(exit)
       expect(subject).not_to be_in_journey
     end
@@ -98,16 +91,23 @@ describe Oystercard do
     end
   end
 
+  before(:each) do
+    allow(journey).to receive(:start)
+    allow(journey).to receive(:finish) { Oystercard::MIN_FARE }
+    allow(journey).to receive(:log) { { :entry => entry, :exit => exit } }
+    allow(journey).to receive(:reset)
+  end
+
   it "stores journeys in history" do
     subject.top_up(15)
     subject.touch_in(entry)
     subject.touch_out(exit)
-    expect(subject).to respond_to(:journeys)
+    expect(subject).to respond_to(:history)
   end
   it "stores journeys in history" do
     subject.top_up(15)
     subject.touch_in(entry)
     subject.touch_out(exit)
-    expect(subject.journeys).to eq([{ :entry => entry, :exit => exit }])
+    expect(subject.history).to eq([{ :entry => entry, :exit => exit }])
   end
 end
